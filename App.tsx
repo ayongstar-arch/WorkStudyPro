@@ -1,23 +1,15 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Upload, Settings, Activity, Video, BarChart2, FolderDown, FolderUp, Download, ClipboardList, Zap, Trash2, X, SplitSquareHorizontal, GitPullRequest, Layers, Menu, Save, FileText, HelpCircle, CheckCircle, LogOut, FilePlus, Scissors, Copy, Clipboard, Monitor, ZoomIn, ZoomOut, Info, ShieldAlert, BrainCircuit, Box, Cloud, Wifi, WifiOff } from 'lucide-react';
+import { Settings, Activity, Video, BarChart2, ClipboardList, Trash2, X, Save, HelpCircle, LogOut, FilePlus, Monitor, ZoomIn, ZoomOut, Info, Cloud, WifiOff, FolderUp } from 'lucide-react';
 import VideoAnalyzer from './components/VideoAnalyzer';
 import VideoRecorder from './components/VideoRecorder';
 import YamazumiChart from './components/YamazumiChart';
-import CycleLog from './components/CycleLog';
 import WorkStudy from './components/WorkStudy';
-import VideoComparison from './components/VideoComparison';
-import Rearrangement from './components/Rearrangement';
-import MultiAxialAnalysis from './components/MultiAxialAnalysis';
-import SmartReport from './components/SmartReport';
-import ErgonomicsAnalysis from './components/ErgonomicsAnalysis';
-import SimulationAnalysis from './components/SimulationAnalysis';
-import ProductionDigitalTwin from './components/ProductionDigitalTwin';
 import { ProjectRepository } from './services/ProjectRepository';
-import { Cycle, ProjectData, Rect, TriggerStep, WorkStudyTask, MultiAxialResource, MultiAxialEvent, ErgoFrame, SimulationStats, SyncStatus } from './types';
+import { Cycle, ProjectData, Rect, TriggerStep, WorkStudyTask, SyncStatus } from './types';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'record' | 'analyze' | 'workstudy' | 'compare' | 'rearrange' | 'multiaxis' | 'report' | 'ergonomics' | 'simulation' | 'digitaltwin'>('record');
+  const [activeTab, setActiveTab] = useState<'record' | 'analyze' | 'workstudy'>('record');
   
   // App State with Persistence
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
@@ -34,14 +26,6 @@ const App: React.FC = () => {
   // Other States
   const [seekRequest, setSeekRequest] = useState<{ time: number, id: number } | null>(null);
   const [activeStationMapping, setActiveStationMapping] = useState<number>(0);
-  const [lbDependencies, setLbDependencies] = useState<Record<string, string[]>>({});
-  const [maResources, setMaResources] = useState<MultiAxialResource[]>([
-      { id: 1, name: 'พนักงาน (Operator)', type: 'MAN', src: undefined, offset: 0, color: '#3b82f6' },
-      { id: 2, name: 'เครื่องจักร A (Machine A)', type: 'MACHINE', src: undefined, offset: 0, color: '#a855f7' },
-  ]);
-  const [maEvents, setMaEvents] = useState<MultiAxialEvent[]>([]);
-  const [ergoData, setErgoData] = useState<ErgoFrame[]>([]);
-  const [simStats, setSimStats] = useState<SimulationStats | null>(null);
   const [fps, setFps] = useState(0);
   const [status, setStatus] = useState("Ready (LocalDB Active)");
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -226,7 +210,7 @@ const App: React.FC = () => {
               { label: 'Reset Zoom', icon: <Monitor size={14}/>, action: () => (document.body.style as any).zoom = "100%" },
           ]
       },
-      { label: 'Help', items: [{ label: 'About', icon: <Info size={14}/>, action: () => alert("Yamazumi AI Analyst\nv3.0 World-Class Edition") }] }
+      { label: 'Help', items: [{ label: 'About', icon: <Info size={14}/>, action: () => alert("WorkStudyPro\nv3.1 Lite Edition") }] }
   ];
 
   const TabButton = ({ id, label, icon: Icon }: any) => (
@@ -286,18 +270,11 @@ const App: React.FC = () => {
           </div>
       </div>
 
-      {/* TABS */}
+      {/* TABS - Only 3 tabs now */}
       <div className="flex px-2 pt-2 bg-[#f0f0f0] border-b border-gray-300 shrink-0 overflow-x-auto no-scrollbar">
           <TabButton id="record" label="Capture" icon={Video} />
           <TabButton id="analyze" label="AI Analyzer" icon={BarChart2} />
           <TabButton id="workstudy" label="Work Study" icon={ClipboardList} />
-          <TabButton id="compare" label="Compare" icon={SplitSquareHorizontal} />
-          <TabButton id="rearrange" label="Balance" icon={GitPullRequest} />
-          <TabButton id="digitaltwin" label="3D Twin" icon={Box} />
-          <TabButton id="multiaxis" label="Man-Machine" icon={Layers} />
-          <TabButton id="report" label="Report" icon={FileText} />
-          <TabButton id="ergonomics" label="Ergo" icon={ShieldAlert} />
-          <TabButton id="simulation" label="Sim" icon={BrainCircuit} />
       </div>
 
       {/* WORKSPACE */}
@@ -329,9 +306,9 @@ const App: React.FC = () => {
                     </div>
                     <div className="p-2 space-y-4">
                         <fieldset className="border border-blue-400 bg-blue-50 p-2 rounded-sm">
-                            <legend className="text-[10px] text-blue-700 font-bold px-1 ml-1 bg-blue-50">Digital Twin Link</legend>
+                            <legend className="text-[10px] text-blue-700 font-bold px-1 ml-1 bg-blue-50">Task Mapping</legend>
                             <div className="space-y-1">
-                                <label className="text-xs block text-gray-600">Map to Station:</label>
+                                <label className="text-xs block text-gray-600">Map to Task:</label>
                                 <select className="w-full text-xs border border-blue-300 rounded px-1 py-1 bg-white outline-none" value={activeStationMapping} onChange={(e) => setActiveStationMapping(Number(e.target.value))}>
                                     {workStudyTasks.map((t, i) => <option key={t.id} value={i}>{i+1}. {t.name}</option>)}
                                 </select>
@@ -367,13 +344,7 @@ const App: React.FC = () => {
                     </div>
                 </div>
             </div>
-        ) : activeTab === 'compare' ? (<div className="w-full h-full p-2"><VideoComparison /></div>) : 
-         activeTab === 'rearrange' ? (<div className="w-full h-full p-2"><Rearrangement sourceTasks={workStudyTasks} defaultTaktTime={taktTime} dependencies={lbDependencies} setDependencies={setLbDependencies} /></div>) : 
-         activeTab === 'digitaltwin' ? (<div className="w-full h-full"><ProductionDigitalTwin tasks={workStudyTasks} taktTime={taktTime} /></div>) : 
-         activeTab === 'multiaxis' ? (<div className="w-full h-full"><MultiAxialAnalysis resources={maResources} setResources={setMaResources} events={maEvents} setEvents={setMaEvents} /></div>) : 
-         activeTab === 'report' ? (<div className="w-full h-full"><SmartReport tasks={workStudyTasks} videoSrc={videoSrc} ergoData={ergoData} simStats={simStats} /></div>) : 
-         activeTab === 'ergonomics' ? (<div className="w-full h-full"><ErgonomicsAnalysis videoSrc={videoSrc} onDataUpdate={setErgoData} /></div>) : 
-         activeTab === 'simulation' ? (<div className="w-full h-full"><SimulationAnalysis tasks={workStudyTasks} defaultTaktTime={taktTime} onResults={setSimStats} /></div>) : 
+        ) : 
          (<div className="w-full h-full p-2"><WorkStudy videoSrc={videoSrc} tasks={workStudyTasks} setTasks={setWorkStudyTasks} /></div>)}
       </div>
 
