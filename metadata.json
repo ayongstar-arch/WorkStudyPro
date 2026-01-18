@@ -1,0 +1,8 @@
+{
+  "name": "Yamazumi AI Analyst",
+  "description": "Industrial Work Study Suite: Universal Video Recorder for capturing operations and AI Analyst for generating Yamazumi charts.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

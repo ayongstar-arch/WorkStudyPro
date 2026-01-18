@@ -1,0 +1,22 @@
+
+{
+  "short_name": "Yamazumi AI",
+  "name": "Yamazumi AI Analyst Suite",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2620/2620529.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2620/2620529.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#111827",
+  "background_color": "#f3f4f6",
+  "orientation": "landscape"
+}
